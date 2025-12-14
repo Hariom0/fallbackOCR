@@ -29,7 +29,7 @@ const elements = {
 	loadingMessage: document.getElementById("loadingMessage"),
 	loadingProgress: document.getElementById("loadingProgress"),
 	loadingProgressBar: document.getElementById("loadingProgressBar"),
-	fileCount: document.getElementById("fileCount")
+	fileCount: document.getElementById("fileCount"),
 };
 
 // ============================================
@@ -38,9 +38,9 @@ const elements = {
 const state = {
 	uploadedImages: [],
 	currentIndex: -1,
-	ocrResults: {}, 
+	ocrResults: {},
 	isProcessing: false,
-	isHandlingFileSelection: false
+	isHandlingFileSelection: false,
 };
 
 // ============================================
@@ -49,10 +49,7 @@ const state = {
 function showToast(message, type = "info", duration = 4000) {
 	const toast = document.createElement("div");
 	toast.className = `toast-enter bg-white rounded-2xl shadow-2xl border-l-4 p-5 flex items-start gap-4 min-w-[320px] pointer-events-auto ${
-		type === "success" ? "border-green-500" :
-		type === "error" ? "border-red-500" :
-		type === "warning" ? "border-amber-500" :
-		"border-blue-500"
+		type === "success" ? "border-green-500" : type === "error" ? "border-red-500" : type === "warning" ? "border-amber-500" : "border-blue-500"
 	}`;
 
 	const icons = {
@@ -67,7 +64,7 @@ function showToast(message, type = "info", duration = 4000) {
 		</svg>`,
 		info: `<svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-		</svg>`
+		</svg>`,
 	};
 
 	toast.innerHTML = `
@@ -123,14 +120,14 @@ elements.fileInput.addEventListener("change", (e) => {
 	e.preventDefault();
 	e.stopPropagation();
 	e.stopImmediatePropagation();
-	
+
 	if (state.isHandlingFileSelection) {
 		console.log("File selection already in progress, ignoring duplicate event");
 		return;
 	}
-	
+
 	state.isHandlingFileSelection = true;
-	
+
 	try {
 		state.uploadedImages = Array.from(e.target.files);
 		elements.thumbnailList.innerHTML = "";
@@ -145,7 +142,7 @@ elements.fileInput.addEventListener("change", (e) => {
 		}
 
 		elements.emptyThumbNote.classList.add("hidden");
-		elements.fileCount.textContent = `${state.uploadedImages.length} file${state.uploadedImages.length > 1 ? 's' : ''}`;
+		elements.fileCount.textContent = `${state.uploadedImages.length} file${state.uploadedImages.length > 1 ? "s" : ""}`;
 		elements.fileCount.classList.remove("hidden");
 
 		state.uploadedImages.forEach((file, index) => {
@@ -220,7 +217,7 @@ function selectImage(index) {
 // THUMBNAIL METADATA UPDATE
 // ============================================
 function updateThumbnailMetadata(result) {
-	const thumbIndex = state.uploadedImages.findIndex(f => f.name === result.fileName);
+	const thumbIndex = state.uploadedImages.findIndex((f) => f.name === result.fileName);
 	if (thumbIndex === -1) return;
 
 	const thumbMeta = document.getElementById(`thumbnailMeta-${thumbIndex}`);
@@ -231,26 +228,27 @@ function updateThumbnailMetadata(result) {
 	if (!thumbMeta || !thumbConfidence || !thumbMethod || !statusBadgeEl) return;
 
 	const confidenceValue = result.confidence ? Math.round(result.confidence) : 0;
-	const confidenceClass = confidenceValue >= 90 ? "text-green-700 bg-green-100" : 
-		confidenceValue >= 70 ? "text-amber-700 bg-amber-100" : "text-red-700 bg-red-100";
-	
+	const confidenceClass = confidenceValue >= 90 ? "text-green-700 bg-green-100" : confidenceValue >= 70 ? "text-amber-700 bg-amber-100" : "text-red-700 bg-red-100";
+
 	const methodLabels = {
 		"tesseract-primary": "Primary",
 		"tesseract-preprocessed": "Preprocessed",
-		"ocr_failed": "Failed"
+		ocr_failed: "Failed",
 	};
 
 	thumbMeta.classList.remove("hidden");
 	thumbConfidence.className = `px-2 py-1 rounded-full font-bold ${confidenceClass}`;
 	thumbConfidence.textContent = `${confidenceValue}%`;
 	thumbMethod.textContent = methodLabels[result.method] || result.method;
-	
-	statusBadgeEl.className = result.status === "success" 
-		? "absolute top-2 right-2 w-7 h-7 rounded-full bg-green-500 flex items-center justify-center shadow-lg"
-		: "absolute top-2 right-2 w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center shadow-lg";
-	statusBadgeEl.innerHTML = result.status === "success" 
-		? `<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`
-		: `<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`;
+
+	statusBadgeEl.className =
+		result.status === "success"
+			? "absolute top-2 right-2 w-7 h-7 rounded-full bg-green-500 flex items-center justify-center shadow-lg"
+			: "absolute top-2 right-2 w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center shadow-lg";
+	statusBadgeEl.innerHTML =
+		result.status === "success"
+			? `<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`
+			: `<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`;
 	statusBadgeEl.classList.remove("hidden");
 }
 
@@ -258,21 +256,21 @@ function updateThumbnailMetadata(result) {
 // METADATA DISPLAY UPDATE
 // ============================================
 function updateMetadataDisplay(result) {
-	const statusBadge = result.status === "success" 
-		? `<span class="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">✓ Success</span>`
-		: `<span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">⚠ Manual Required</span>`;
+	const statusBadge =
+		result.status === "success"
+			? `<span class="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">✓ Success</span>`
+			: `<span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">⚠ Manual Required</span>`;
 	elements.ocrStatus.innerHTML = statusBadge;
 
 	const methodLabels = {
 		"tesseract-primary": "Primary OCR",
 		"tesseract-preprocessed": "Preprocessed OCR",
-		"ocr_failed": "OCR Failed"
+		ocr_failed: "OCR Failed",
 	};
 	elements.ocrMethod.textContent = methodLabels[result.method] || result.method;
 
 	const confidenceValue = result.confidence ? Math.round(result.confidence) : 0;
-	const confidenceColor = confidenceValue >= 90 ? "text-green-600" : 
-		confidenceValue >= 70 ? "text-amber-600" : "text-red-600";
+	const confidenceColor = confidenceValue >= 90 ? "text-green-600" : confidenceValue >= 70 ? "text-amber-600" : "text-red-600";
 	elements.ocrConfidence.innerHTML = `<span class="${confidenceColor} font-bold text-lg">${confidenceValue}%</span>`;
 
 	updateThumbnailMetadata(result);
@@ -298,7 +296,7 @@ elements.processAllBtn.addEventListener("click", async () => {
 	elements.processBtnIcon.classList.add("hidden");
 	elements.processBtnSpinner.classList.remove("hidden");
 	elements.processBtnText.textContent = "Processing...";
-	
+
 	showLoadingOverlay(state.uploadedImages.length);
 
 	const formData = new FormData(elements.imageForm);
@@ -317,14 +315,14 @@ elements.processAllBtn.addEventListener("click", async () => {
 		}
 
 		const data = await res.json();
-		console.log(data)
+		console.log(data);
 		if (!data.extractedData || data.extractedData.length === 0) {
 			throw new Error("No data received from server");
 		}
 
 		elements.loadingTitle.textContent = "Processing Results";
 		elements.loadingMessage.textContent = "Analyzing OCR results and updating interface...";
-		
+
 		let successCount = 0;
 		let manualRequiredCount = 0;
 		let hasManualRequired = false;
@@ -332,9 +330,9 @@ elements.processAllBtn.addEventListener("click", async () => {
 		for (let index = 0; index < data.extractedData.length; index++) {
 			const item = data.extractedData[index];
 			updateLoadingProgress(index + 1, data.extractedData.length);
-			
+
 			if (index < data.extractedData.length - 1) {
-				await new Promise(resolve => setTimeout(resolve, 100));
+				await new Promise((resolve) => setTimeout(resolve, 100));
 			}
 
 			state.ocrResults[item.fileName] = {
@@ -342,7 +340,7 @@ elements.processAllBtn.addEventListener("click", async () => {
 				confidence: item.confidence || 0,
 				status: item.status || "unknown",
 				method: item.method || "unknown",
-				fileName: item.fileName
+				fileName: item.fileName,
 			};
 
 			updateThumbnailMetadata(state.ocrResults[item.fileName]);
@@ -350,19 +348,11 @@ elements.processAllBtn.addEventListener("click", async () => {
 			if (item.status === "success") {
 				successCount++;
 				const methodMsg = item.method === "tesseract-preprocessed" ? " (with preprocessing)" : "";
-				showToast(
-					`${item.fileName}: OCR successful${methodMsg} - Confidence: ${Math.round(item.confidence)}%`,
-					"success",
-					5000
-				);
+				showToast(`${item.fileName}: OCR successful${methodMsg} - Confidence: ${Math.round(item.confidence)}%`, "success", 5000);
 			} else if (item.status === "manual_required") {
 				manualRequiredCount++;
 				hasManualRequired = true;
-				showToast(
-					`${item.fileName}: Manual review required - Low confidence: ${Math.round(item.confidence)}%`,
-					"warning",
-					6000
-				);
+				showToast(`${item.fileName}: Manual review required - Low confidence: ${Math.round(item.confidence)}%`, "warning", 6000);
 			}
 		}
 
@@ -371,11 +361,7 @@ elements.processAllBtn.addEventListener("click", async () => {
 		if (successCount > 0 && manualRequiredCount === 0) {
 			showToast(`All ${successCount} page(s) processed successfully!`, "success", 4000);
 		} else if (manualRequiredCount > 0) {
-			showToast(
-				`Processing complete: ${successCount} successful, ${manualRequiredCount} require manual review`,
-				"warning",
-				6000
-			);
+			showToast(`Processing complete: ${successCount} successful, ${manualRequiredCount} require manual review`, "warning", 6000);
 		}
 
 		if (hasManualRequired) {
@@ -383,18 +369,18 @@ elements.processAllBtn.addEventListener("click", async () => {
 				elements.manualRequiredOverlay.classList.remove("hidden");
 				elements.manualRequiredOverlay.classList.add("flex");
 				const manualFiles = data.extractedData
-					.filter(item => item.status === "manual_required")
-					.map(item => item.fileName)
+					.filter((item) => item.status === "manual_required")
+					.map((item) => item.fileName)
 					.join(", ");
-				document.getElementById("manualRequiredMessage").textContent = 
-					`The following file(s) have low OCR confidence and require manual review: ${manualFiles}. Please review and correct the extracted text using the Edit button.`;
+				document.getElementById(
+					"manualRequiredMessage"
+				).textContent = `The following file(s) have low OCR confidence and require manual review: ${manualFiles}. Please review and correct the extracted text using the Edit button.`;
 			}, 500);
 		}
 
 		if (state.uploadedImages.length > 0) {
 			selectImage(0);
 		}
-
 	} catch (err) {
 		console.error("OCR failed:", err);
 		hideLoadingOverlay();
@@ -457,7 +443,7 @@ elements.saveTextBtn.addEventListener("click", () => {
 			confidence: 0,
 			status: "manual",
 			method: "manual_edit",
-			fileName: file.name
+			fileName: file.name,
 		};
 		showToast("Text saved successfully", "success");
 	}
@@ -492,73 +478,34 @@ elements.exportPdfBtn.addEventListener("click", () => {
 	const result = state.ocrResults[file.name];
 	const text = result ? result.text : "";
 
-	if (!text || text.trim() === "" || text === "OCR not processed yet. Click 'Process OCR'.") {
-		showToast("No recognized text available for this page. Please process OCR first.", "warning");
+	if (!text || text.trim() === "" || text.includes("OCR not processed")) {
+		showToast("No recognized text available. Please process OCR first.", "warning");
 		return;
 	}
 
-	try {
-		const { jsPDF } = window.jspdf;
-		const doc = new jsPDF();
+	// ✅ Ensure UTF-8 encoding
+	const blob = new Blob(
+		[
+			`File: ${file.name}\n` +
+			`Confidence: ${Math.round(result.confidence || 0)}%\n` +
+			`Method: ${result.method || "N/A"}\n` +
+			`Status: ${result.status || "N/A"}\n\n` +
+			text
+		],
+		{ type: "text/plain;charset=utf-8" }
+	);
 
-		const pageWidth = doc.internal.pageSize.getWidth();
-		const pageHeight = doc.internal.pageSize.getHeight();
-		const margin = 20;
-		const maxWidth = pageWidth - 2 * margin;
-		const lineHeight = 7;
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement("a");
+	a.href = url;
+	a.download = file.name.replace(/\.[^/.]+$/, "") + "_OCR.txt";
+	document.body.appendChild(a);
+	a.click();
 
-		const lines = doc.splitTextToSize(text, maxWidth);
+	URL.revokeObjectURL(url);
+	a.remove();
 
-		let y = margin;
-		let pageNum = 1;
-
-		doc.setFontSize(16);
-		doc.setFont(undefined, "bold");
-		doc.text(`Page ${pageNum}: ${file.name}`, margin, y);
-		y += lineHeight * 2;
-
-		if (result && result.confidence) {
-			doc.setFontSize(10);
-			doc.setFont(undefined, "normal");
-			doc.setTextColor(100, 100, 100);
-			doc.text(`Confidence: ${Math.round(result.confidence)}% | Method: ${result.method} | Status: ${result.status}`, margin, y);
-			y += lineHeight * 1.5;
-			doc.setTextColor(0, 0, 0);
-		}
-
-		doc.setLineWidth(0.5);
-		doc.line(margin, y, pageWidth - margin, y);
-		y += lineHeight * 1.5;
-
-		doc.setFontSize(11);
-		doc.setFont(undefined, "normal");
-
-		lines.forEach((line) => {
-			if (y + lineHeight > pageHeight - margin) {
-				doc.addPage();
-				pageNum++;
-				y = margin;
-				doc.setFontSize(16);
-				doc.setFont(undefined, "bold");
-				doc.text(`Page ${pageNum}: ${file.name} (continued)`, margin, y);
-				y += lineHeight * 2;
-				doc.setLineWidth(0.5);
-				doc.line(margin, y, pageWidth - margin, y);
-				y += lineHeight * 1.5;
-				doc.setFontSize(11);
-				doc.setFont(undefined, "normal");
-			}
-			doc.text(line, margin, y);
-			y += lineHeight;
-		});
-
-		const fileName = file.name.replace(/\.[^/.]+$/, "") + "_OCR.pdf";
-		doc.save(fileName);
-		showToast(`PDF exported: ${fileName}`, "success");
-	} catch (err) {
-		console.error("PDF export failed:", err);
-		showToast("PDF export failed. Please try again.", "error");
-	}
+	showToast("Text file exported successfully", "success");
 });
 
 // ============================================
