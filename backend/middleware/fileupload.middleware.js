@@ -10,9 +10,7 @@ const imageTypes = /jpeg|jpg|png/;
 const imageStorage = multer.diskStorage({
 	destination: (req, file, cb) => cb(null, TMP_DIR),
 	filename:  (req, file, cb) => {
-		const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`;
-		let name = file.fieldname + "-" + uniqueName;
-		cb(null, name);
+		cb(null, file.originalname);
 	},
 });
 
