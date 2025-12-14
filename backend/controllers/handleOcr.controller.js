@@ -61,11 +61,12 @@ async function extractData(fileNames, lang) {
 		}
 
 		// Clean file
-		if (fs.access(originalPath)) {
+		if (fs.access(originalPath , (err)=>{
+			if(err) return console.log(err)
 			fs.unlink(originalPath, (err) => {
 				if (err) console.log(err);
 			});
-		}
+		})
 		// OCR
 		results.push({
 			fileName,
