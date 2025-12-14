@@ -61,7 +61,7 @@ async function extractData(fileNames, lang) {
 		}
 
 		// Clean file
-		if (fs.access(path)) {
+		if (fs.access(originalPath)) {
 			fs.unlink(originalPath, (err) => {
 				if (err) console.log(err);
 			});
